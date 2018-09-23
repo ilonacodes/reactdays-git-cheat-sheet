@@ -1,11 +1,22 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {Item} from './Item';
+import styled from 'react-emotion';
+
+const Container = styled('div')`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
 
 const GitCheatSheetComponent = ({searchResults}) => {
     return(
-        <div>{searchResults.map((result, index) =>
-            <div key={index}>{result.category}</div>
-        )}</div>
+        <Container>{searchResults.map((result, index) =>
+            <div key={index}>
+                <Item result={result}/>
+            </div>
+        )}</Container>
     );
 };
 
