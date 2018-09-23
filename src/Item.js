@@ -3,15 +3,16 @@ import {css} from 'emotion';
 import styled from 'react-emotion';
 
 const ItemWrapper = styled('div')`
-    display: flex;
     flex-direction: column;
-    width: 360px;
-    margin: 0 5px;
+    break-inside: avoid-column;
+    display: inline-flex ;
+    width:100%;
+
 `;
 
 const ItemBorder = styled('div')`
     border: 1px solid slategrey;
-    margin-top: 10px;
+    margin: 10px 0;
 `;
 
 const itemCategory = css`
@@ -36,7 +37,7 @@ const itemCommand = css`
     padding: 5px 10px;
 `;
 
-const Category = (props) => {
+const CategoryStyle = (props) => {
     return (
         <div className={itemCategory}>{props.category}</div>
     );
@@ -52,16 +53,23 @@ const Command = (props) => {
     return (
         <div className={itemCommand}>$ {props.command}</div>
     );
-}
+};
 
-export const Item = (props) => {
-    return (
+
+export const Category = (props) => {
+    return(
         <ItemWrapper>
             <ItemBorder>
-                <Category category={props.result.category} />
-                <Description description={props.result.description} />
-                <Command command={props.result.command} />
+                <CategoryStyle category={props.name}/>
+                <div>
+                    {props.category.map((item, index) =>
+                        <div key={index}>
+                            <Description description={item.description} />
+                            <Command command={item.command} />
+                        </div>
+                    )}
+                </div>
             </ItemBorder>
         </ItemWrapper>
     );
-}
+};
