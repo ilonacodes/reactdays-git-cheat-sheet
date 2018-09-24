@@ -1,7 +1,9 @@
 import React from 'react';
-import {Formik} from 'formik';
+import {Field, Formik} from 'formik';
 import {css} from 'emotion';
 import styled from 'react-emotion';
+import {actions} from './actions';
+import {connect} from 'react-redux';
 
 const CustomForm = styled('form')`
     display: flex;
@@ -47,14 +49,21 @@ const floatingLabel = css`
    transition: all .3s;
 `;
 
-export class Search extends React.Component {
+const SearchInput = () => {
+
+    return (
+        <input type="text"
+               className={floatingLabel}
+               onFocus={this.fieldActivate}
+               onBlur={this.disableFocus}
+               onChange={this.updateInputValue}
+        />
+    );
+};
+
+export class SearchComponent extends React.Component {
     constructor() {
         super();
-
-        this.state = {
-            inputValue: '',
-            fieldActive: false
-        };
 
         this.fieldActivate = this.fieldActivate.bind(this);
         this.disableFocus = this.disableFocus.bind(this);
@@ -87,20 +96,40 @@ export class Search extends React.Component {
     render() {
         return (
             <Formik
-                initialValues={this.state.inputValue}
+                initialValues={{query: ''}}
+                onSubmit={(values, actions) => {
+                    this.props.searchQuery(values.query);
+                    actions.setSubmitting(false);
+                    actions.resetForm({query: ''});
+                }}
                 render={props =>
                     <CustomForm onSubmit={props.handleSubmit}>
-                        <CustomLabel className={this.state.fieldActive ? fieldActive : ''}>The Awesome Git Cheat Sheet 🔍</CustomLabel>
-                        <input type="text"
-                               className={floatingLabel}
-                               onFocus={this.fieldActivate}
-                               onBlur={this.disableFocus}
-                               onChange={this.updateInputValue}
+                        {/*<CustomLabel className={this.state.fieldActive ? fieldActive : ''}>The Awesome Git Cheat Sheet*/}
+                            {/*🔍</CustomLabel>*/}
+                        <Field
+                           // component={SearchInput}
+                           name="query"
+                           type="text"
                         />
                     </CustomForm>
                 }
             />
         );
-    }
+    };
 
 };
+
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        searchQuery: query => dispatch(actions.searchQuery(query))
+    };
+};
+
+export const Search = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SearchComponent);

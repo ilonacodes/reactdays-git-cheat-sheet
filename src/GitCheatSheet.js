@@ -14,6 +14,7 @@ const Container = styled('div')`
 `;
 
 const GitCheatSheetComponent = ({searchResults}) => {
+    console.log(searchResults);
     let categories = {};
     {searchResults.forEach(result => {
         if (typeof categories[result.category] === "undefined") {
@@ -33,6 +34,7 @@ const GitCheatSheetComponent = ({searchResults}) => {
 };
 
 const mapStateToProps = (state) => {
+    console.log("state", state);
     return {
         searchResults: state.searchResults
     }
