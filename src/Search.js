@@ -11,7 +11,7 @@ const CustomForm = styled('form')`
     flex-direction: column;
     align-items: center;
     width: 100%;
-    margin-top: 40px;
+    margin-top: 20px;
 `;
 
 const CustomLabel = styled('label')`
@@ -49,25 +49,19 @@ const floatingLabel = css`
    transition: all .3s;
 `;
 
-const SearchInput = () => {
-
-    return (
-        <input type="text"
-               className={floatingLabel}
-               onFocus={this.fieldActivate}
-               onBlur={this.disableFocus}
-               onChange={this.updateInputValue}
-        />
-    );
-};
-
-export class SearchComponent extends React.Component {
+class SearchInput extends React.Component {
     constructor() {
         super();
+
+        this.state = {
+            fieldActive: false
+        };
 
         this.fieldActivate = this.fieldActivate.bind(this);
         this.disableFocus = this.disableFocus.bind(this);
         this.updateInputValue = this.updateInputValue.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onBlur = this.onBlur.bind(this);
     }
 
     fieldActivate() {
@@ -93,6 +87,38 @@ export class SearchComponent extends React.Component {
         e.preventDefault();
     }
 
+    onChange(e, form) {
+        this.props.field.onChange(e);
+        this.updateInputValue(e);
+        form.handleSubmit(e);
+    };
+
+    onBlur(e) {
+        this.props.field.onBlur(e);
+        this.disableFocus(e);
+    }
+
+    render() {
+        const {field, form} = this.props;
+        return (
+            <CustomForm>
+                <CustomLabel className={this.state.fieldActive ? fieldActive : ''}>The Awesome Git Cheat Sheet
+                    🔍</CustomLabel>
+                <input type="text"
+                       {...field}
+                       className={floatingLabel}
+                       onFocus={this.fieldActivate}
+                       onBlur={this.onBlur}
+                       onChange={(e) => this.onChange(e, form)}
+                />
+            </CustomForm>
+
+        );
+    }
+};
+
+export class SearchComponent extends React.Component {
+
     render() {
         return (
             <Formik
@@ -100,16 +126,13 @@ export class SearchComponent extends React.Component {
                 onSubmit={(values, actions) => {
                     this.props.searchQuery(values.query);
                     actions.setSubmitting(false);
-                    actions.resetForm({query: ''});
                 }}
                 render={props =>
                     <CustomForm onSubmit={props.handleSubmit}>
-                        {/*<CustomLabel className={this.state.fieldActive ? fieldActive : ''}>The Awesome Git Cheat Sheet*/}
-                            {/*🔍</CustomLabel>*/}
                         <Field
-                           // component={SearchInput}
-                           name="query"
-                           type="text"
+                            component={SearchInput}
+                            name="query"
+                            type="text"
                         />
                     </CustomForm>
                 }
