@@ -14,10 +14,11 @@ export const gitCheatReducer = (state = initState, action) => {
             return { ...state,
                     searchResults: state.allData.filter(result => {
 
-                        return result.category.includes(action.query) ||
-                            result.description.includes(action.query) ||
-                            result.command.includes(action.query) ||
-                            result.keywords.includes(action.query)
+                        return result.category.toLowerCase().includes(action.query.toLowerCase()) ||
+                            result.description.toLowerCase().includes(action.query.toLowerCase()) ||
+                            result.command.toLowerCase().includes(action.query.toLowerCase()) ||
+                            result.keywords.map(keyword => keyword.toLowerCase())
+                                .includes(action.query.toLowerCase())
                     })
                 };
 
